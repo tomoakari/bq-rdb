@@ -1,38 +1,61 @@
-# sv
+# User Management Application with BigQuery
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+このアプリケーションは、BigQueryを使用してユーザー情報を管理するシンプルなWebアプリケーションです。
 
-## Creating a project
+## 機能
 
-If you're seeing this, you've probably already done this step. Congrats!
+- ユーザー一覧の表示
+- 新規ユーザーの登録
+- グループ管理
+
+## セットアップ手順
+
+### 1. 必要条件
+
+- Node.js (v16以上)
+- Google Cloud Projectのアクセス権
+- BigQueryのデータセット
+
+### 2. インストール
 
 ```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
+npm install
 ```
 
-## Developing
+### 3. BigQueryの設定
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+1. Google Cloud Consoleで新しいサービスアカウントを作成
+2. BigQueryへのアクセス権を付与（BigQuery Admin権限推奨）
+3. サービスアカウントキー（JSON）をダウンロード
+4. プロジェクトのルートに`.env`ファイルを作成し、以下の環境変数を設定:
 
+```env
+GOOGLE_APPLICATION_CREDENTIALS="path/to/your/service-account-key.json"
+GOOGLE_CLOUD_PROJECT="your-project-id"
+BIGQUERY_DATASET="your-dataset-name"
+```
+
+### 4. テーブルの作成
+
+1. BigQueryコンソールを開く
+2. `sql/create_tables.sql`の内容を実行してテーブルを作成
+
+### 5. アプリケーションの起動
+
+開発モード:
 ```bash
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
-
-To create a production version of your app:
-
+本番ビルド:
 ```bash
 npm run build
+npm run preview
 ```
 
-You can preview the production build with `npm run preview`.
+## 使用技術
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+- SvelteKit
+- TypeScript
+- Google BigQuery
+- Node.js
