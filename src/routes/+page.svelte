@@ -56,6 +56,8 @@
   <!-- アクションボタン領域 - 新規登録ページへのリンクを配置 -->
   <div class="actions">
     <a href="/register" class="button">新規登録</a>
+    <a href="/research/add" class="button">リサーチ登録</a>
+    <a href="/research/list" class="button">リサーチ一覧</a>
   </div>
 
   <!-- エラーメッセージ表示領域 - エラーが発生した場合のみ表示 -->
@@ -118,6 +120,7 @@
     text-decoration: none;
     border-radius: 4px;
     transition: background-color 0.2s;
+    margin-right: 10px;
   }
 
   .button:hover {

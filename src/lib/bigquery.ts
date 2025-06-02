@@ -126,3 +126,70 @@ export async function createUser(name: string, groupId: number) {
     throw error;
   }
 }
+
+/**
+ * リサーチ一覧を取得する関数
+ * 
+ * BigQueryからすべてのリサーチ情報を取得します。
+ * IDの昇順でソートされます。
+ * 
+ * @returns {Promise<Array>} リサーチ情報の配列
+ * @throws {Error} クエリ実行時にエラーが発生した場合
+ */
+export async function getResearch() {
+  const query = `
+    SELECT *
+    FROM \`${env.GOOGLE_CLOUD_PROJECT}.${dataset}.research\`
+    ORDER BY id
+  `;
+
+  try {
+    const [rows] = await bigquery.query({ query });
+    return rows;
+  } catch (error) {
+    console.error('Error fetching research:', error);
+    throw error;
+  }
+}
+
+/**
+ * 新規リサーチを登録する関数
+ * 
+ * @param {string} value - 登録する値（name1~name9に同じ値が設定されます）
+ * @returns {Promise<Object>} 作成されたリサーチの情報
+ * @throws {Error} リサーチ作成時にエラーが発生した場合
+ */
+export async function createResearch(value: string) {
+  const getMaxIdQuery = `
+    SELECT COALESCE(MAX(id), 0) as max_id
+    FROM \`${env.GOOGLE_CLOUD_PROJECT}.${dataset}.research\`
+  `;
+
+  try {
+    const [maxIdResult] = await bigquery.query({ query: getMaxIdQuery });
+    const newId = maxIdResult[0].max_id + 1;
+
+    const insertQuery = `
+      INSERT INTO \`${env.GOOGLE_CLOUD_PROJECT}.${dataset}.research\` 
+      (id, name1, name2, name3, name4, name5, name6, name7, name8, name9)
+      VALUES (${newId}, '${value}', '${value}', '${value}', '${value}', '${value}', '${value}', '${value}', '${value}', '${value}')
+    `;
+
+    await bigquery.query({ query: insertQuery });
+    return { 
+      id: newId,
+      name1: value,
+      name2: value,
+      name3: value,
+      name4: value,
+      name5: value,
+      name6: value,
+      name7: value,
+      name8: value,
+      name9: value
+    };
+  } catch (error) {
+    console.error('Error creating research:', error);
+    throw error;
+  }
+}
