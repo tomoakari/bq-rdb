@@ -1,8 +1,10 @@
 <script lang="ts">
+  import Header from '$lib/Header.svelte';
   let value = '';
   let message = '';
   let isLoading = false;
   let latency = '';
+  let dataSize = '';
 
   async function handleSubmit() {
     if (!value) {
@@ -15,20 +17,28 @@
 
     try {
       const startTime = performance.now();
+      const requestData = JSON.stringify({ value });
       const response = await fetch('/api/research', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ value }),
+        body: requestData,
       });
 
       if (!response.ok) {
         throw new Error('リサーチの登録に失敗しました');
       }
 
+      const responseData = await response.json();
       const endTime = performance.now();
       latency = ((endTime - startTime) / 1000).toFixed(3);
+      
+      // データサイズの計算（リクエストとレスポンスの合計）
+      const requestSize = new Blob([requestData]).size;
+      const responseSize = new Blob([JSON.stringify(responseData)]).size;
+      const totalSize = requestSize + responseSize;
+      dataSize = (totalSize / 1024).toFixed(2); // KBに変換
       value = '';
       message = 'リサーチを登録しました';
     } catch (error) {
@@ -40,10 +50,16 @@
   }
 </script>
 
+<Header />
 <div class="container">
   <h1>リサーチ登録</h1>
   {#if latency}
-    <p class="latency">処理時間: {latency} 秒</p>
+    <p class="latency">
+      処理時間: {latency} 秒
+      {#if dataSize}
+        / データ容量: {dataSize} KB
+      {/if}
+    </p>
   {/if}
 
   <form on:submit|preventDefault={handleSubmit} class="form">

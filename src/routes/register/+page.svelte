@@ -16,6 +16,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
+  import Header from '$lib/Header.svelte';
 
   // フォームの入力値を管理する変数
   let name = '';  // ユーザー名
@@ -90,6 +91,7 @@
 </script>
 
 <!-- メインコンテンツ部分 -->
+<Header />
 <main class="container">
   <h1>新規ユーザー登録</h1>
 

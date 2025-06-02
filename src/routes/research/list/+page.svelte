@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import Header from '$lib/Header.svelte';
 
   interface Research {
     id: number;
@@ -18,6 +19,7 @@
   let error = '';
   let isLoading = true;
   let latency = '';
+  let dataSize = '';
 
   onMount(async () => {
     try {
@@ -26,9 +28,14 @@
       if (!response.ok) {
         throw new Error('リサーチの取得に失敗しました');
       }
-      research = await response.json();
+      const responseData = await response.json();
+      research = responseData;
       const endTime = performance.now();
       latency = ((endTime - startTime) / 1000).toFixed(3);
+      
+      // データサイズの計算
+      const responseSize = new Blob([JSON.stringify(responseData)]).size;
+      dataSize = (responseSize / 1024).toFixed(2); // KBに変換
     } catch (e) {
       console.error('Error:', e);
       error = 'データの取得中にエラーが発生しました';
@@ -38,10 +45,16 @@
   });
 </script>
 
+<Header />
 <div class="container">
   <h1>リサーチ一覧</h1>
   {#if latency}
-    <p class="latency">読み込み時間: {latency} 秒</p>
+    <p class="latency">
+      読み込み時間: {latency} 秒
+      {#if dataSize}
+        / データ容量: {dataSize} KB
+      {/if}
+    </p>
   {/if}
 
   {#if isLoading}

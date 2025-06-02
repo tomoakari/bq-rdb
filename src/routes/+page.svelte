@@ -13,6 +13,7 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
+  import Header from '$lib/Header.svelte';
 
   // TypeScriptの型定義
   // ユーザー情報の配列の型を定義
@@ -50,16 +51,10 @@
 </script>
 
 <!-- メインコンテンツ部分 -->
+<Header />
 <main class="container">
   <h1>ユーザー一覧</h1>
   
-  <!-- アクションボタン領域 - 新規登録ページへのリンクを配置 -->
-  <div class="actions">
-    <a href="/register" class="button">新規登録</a>
-    <a href="/research/add" class="button">リサーチ登録</a>
-    <a href="/research/list" class="button">リサーチ一覧</a>
-  </div>
-
   <!-- エラーメッセージ表示領域 - エラーが発生した場合のみ表示 -->
   {#if error}
     <div class="error">
