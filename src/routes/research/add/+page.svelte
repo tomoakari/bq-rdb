@@ -2,6 +2,7 @@
   let value = '';
   let message = '';
   let isLoading = false;
+  let latency = '';
 
   async function handleSubmit() {
     if (!value) {
@@ -13,6 +14,7 @@
     message = '';
 
     try {
+      const startTime = performance.now();
       const response = await fetch('/api/research', {
         method: 'POST',
         headers: {
@@ -25,6 +27,8 @@
         throw new Error('リサーチの登録に失敗しました');
       }
 
+      const endTime = performance.now();
+      latency = ((endTime - startTime) / 1000).toFixed(3);
       value = '';
       message = 'リサーチを登録しました';
     } catch (error) {
@@ -38,6 +42,9 @@
 
 <div class="container">
   <h1>リサーチ登録</h1>
+  {#if latency}
+    <p class="latency">処理時間: {latency} 秒</p>
+  {/if}
 
   <form on:submit|preventDefault={handleSubmit} class="form">
     <div class="form-group">
@@ -127,5 +134,11 @@
   .success {
     color: #4CAF50;
     margin-top: 10px;
+  }
+
+  .latency {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
   }
 </style>

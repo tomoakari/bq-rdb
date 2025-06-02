@@ -17,14 +17,18 @@
   let research: Research[] = [];
   let error = '';
   let isLoading = true;
+  let latency = '';
 
   onMount(async () => {
     try {
+      const startTime = performance.now();
       const response = await fetch('/api/research');
       if (!response.ok) {
         throw new Error('リサーチの取得に失敗しました');
       }
       research = await response.json();
+      const endTime = performance.now();
+      latency = ((endTime - startTime) / 1000).toFixed(3);
     } catch (e) {
       console.error('Error:', e);
       error = 'データの取得中にエラーが発生しました';
@@ -36,6 +40,9 @@
 
 <div class="container">
   <h1>リサーチ一覧</h1>
+  {#if latency}
+    <p class="latency">読み込み時間: {latency} 秒</p>
+  {/if}
 
   {#if isLoading}
     <p>読み込み中...</p>
@@ -126,5 +133,11 @@
   .error {
     color: #f44336;
     margin-top: 10px;
+  }
+
+  .latency {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
   }
 </style>
